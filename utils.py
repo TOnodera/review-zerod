@@ -17,8 +17,11 @@ def softmax(x):
 def mean_squered_error(y, t):
     return 0.5 * np.sum((y-t)**2)
 
-# 交差エントロピー誤差
+# 交差エントロピー誤差(バッチ処理対応)
 def cross_entropy_error(y, t):
-    # このdeltaを足さないとy=0の時に-infになる
-    delta = 1e-7
-    return -np.sum(t*np.log(y+delta))
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+    batch_size = y.shape[0]
+    # 一括処理して平均を出す
+    return -np.sum(t*np.log(y)) / batch_size
